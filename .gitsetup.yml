@@ -1,6 +1,5 @@
 ---
 remotes:
   primary: git@github.com:destructuring/tvdinner
-  secondary: git@destructuring.org:destructuring/tvdinner
+  secondary: git@bitbucket.org:destructuring/tvdinner
   rb: https://github.com/destructuring/rb-helper
-  bump: https://github.com/destructuring/mixin-bump
