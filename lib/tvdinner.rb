@@ -1,0 +1,2 @@
+class TVDinner
+end
