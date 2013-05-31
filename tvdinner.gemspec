@@ -9,13 +9,13 @@ Gem::Specification.new do |s|
   s.homepage    = "http://destructuring.org/tvdinner"
   s.license     = "Apache 2.0"
 
-  s.executables  = []
+  s.executables  = %w(chef-local)
   s.test_files   = `git ls-files -- {spec,tasks}/*`.split("\n")
   s.files        = `git ls-files -- lib/* cookbooks/*`.split("\n") 
 
   s.files       += s.test_files
   s.files       += s.executables.map {|f| File.join("bin", f) }
-  s.files       +=  %w(LICENSE VERSION README.md)
+  s.files       +=  %w(LICENSE NOTICE VERSION README.md)
 
   s.require_path = "lib"
 
