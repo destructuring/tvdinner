@@ -103,12 +103,6 @@ class Chef::Application::Local < Chef::Application
     :description  => 'Enable whyrun mode',
     :boolean      => true
 
-  option :compare,
-    :short        => '-C',
-    :long         => '--compare',
-    :description  => 'Enable compare mode',
-    :boolean      => true
-
   option :noop,
     :short        => '-N',
     :long         => '--noop',
@@ -126,10 +120,8 @@ class Chef::Application::Local < Chef::Application
 
     Chef::Config[:solo] = true
 
-    unless Chef::Config[:compare]
-      if Chef::Config[:noop].nil?
-        Chef::Config[:noop] = true
-      end
+    if Chef::Config[:noop]
+      require 'tvdinner/noop'
     end
 
     if Chef::Config[:json_attribs]
