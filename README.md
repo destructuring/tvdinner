@@ -4,4 +4,4 @@
     
     cd tvdinner
     make
-    bundle exec chef-local -c etc/chef/solo.rb -o tvdinner
+    make cook
