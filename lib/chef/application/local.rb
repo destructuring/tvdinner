@@ -150,6 +150,11 @@ class Chef::Application::Local < Chef::Application
         Chef::Application.fatal!("Could not parse the provided JSON file (#{Chef::Config[:json_attribs]})!: " + error.message, 2)
       end
     end
+
+    @chef_client_json ||= Chef::JSONCompat.from_json("{}")
+
+    @chef_client_json[:release_dir] ||= (ENV['RELEASE_DIR'] || ENV['PWD'])
+    @chef_client_json[:project_dir] ||= (ENV['PROJECT_DIR'] || @chef_client_json[:release_dir])
   end
 
   def setup_application
