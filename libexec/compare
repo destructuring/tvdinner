@@ -65,11 +65,11 @@ function main {
     opt_make="no"
   fi
 
-  $shome/libexec/run-noop --${opt_make}make tmp/a $ver_left $pth_rna
-  $shome/libexec/run-noop --${opt_make}make tmp/b $ver_right $pth_rna
+  env RELEASE_DIR=$(pwd)/tmp/a PROJECT_DIR= $shome/libexec/run-noop --${opt_make}make tmp/a $ver_left $pth_rna
+  env RELEASE_DIR=$(pwd)/tmp/b PROJECT_DIR= $shome/libexec/run-noop --${opt_make}make tmp/b $ver_right $pth_rna
 
   local incomplete="$FLAGS_FALSE"
-  for a in $shome/tmp/{a,b}; do
+  for a in tmp/{a,b}; do
     for f in chef.{log,json}; do
       if [[ ! -f "$a/$f" ]]; then
         logger_fatal "missing $a/$f"
@@ -87,13 +87,13 @@ function main {
   logger_info "diff tmp/[ab]/chef.log"
   mark_log "chef-log"
   echo
-  diff $shome/tmp/{a,b}/chef.log || true
+  diff tmp/{a,b}/chef.log || true
   echo
 
   logger_info "diff tmp/[ab]/chef.json"
   mark_log "chef-node"
   echo
-  diff $shome/tmp/{a,b}/chef.json || true
+  diff tmp/{a,b}/chef.json || true
   echo
 }
 
