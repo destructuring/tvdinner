@@ -20,31 +20,32 @@ DEFINE_boolean make "$FLAGS_TRUE" "Run make"
 function main {
   case "$#" in
     0)
-      logger_fatal "missing RNA VERSION"
+      logger_fatal "missing RNA"
       exit 1
       ;;
-    1)
-      logger_fatal "missing VERSION"
-      exit 1
-      ;;
-    2|3)
+    1|2|3)
       true
       ;;
     4)
-      logger_fatal "too many arguments ($*), only need RNA VERSION [VERSION]"
+      logger_fatal "too many arguments ($*), only need RNA [VERSION] [VERSION]"
       exit 1
       ;;
   esac
 
-  local pth_rna="$1"; shift
-  local ver_left="${1#origin/}"; shift
+  local nm_current_branch="$(git branch | awk '$1 == "*" { print $2 }')"
 
-  local ver_right="$(git branch | awk '$1 == "*" { print $2 }')"
+  local pth_rna="$1"; shift
+
+  local ver_left="$nm_current_branch"
+  if [[ "$#" > 0 ]]; then
+    ver_left="${1#origin/}"; shift
+  fi
+
+  local ver_right="$nm_current_branch"
   if [[ "$#" > 0 ]]; then
     ver_right="${1#origin/}"; shift
   fi
 
-  local nm_current_branch="$(git branch | awk '$1 == "*" { print $2 }')"
   if [[ "$(git show-ref $ver_left | grep -v refs/tags/ | wc -l | awk '{print $1}')" != 0 ]]; then
     if [[ "$ver_left" != "$nm_current_branch" ]]; then
       git fetch origin $ver_left:$ver_left

@@ -9,4 +9,4 @@ cook: ready
 	@bundle exec chef-local -c etc/chef/solo.rb -o tvdinner
 
 compare: cook
-	@libexec/compare config/noop.json HEAD
+	@libexec/compare config/noop.json
