@@ -11,15 +11,14 @@ Gem::Specification.new do |s|
 
   s.executables  = %w(chef-local)
   s.test_files   = `git ls-files -- {spec,tasks}/*`.split("\n")
-  s.files        = `git ls-files -- lib/* cookbooks/*`.split("\n") 
-
+  s.files        = `git ls-files -- lib/* cookbooks/* libexec/*`.split("\n") 
   s.files       += s.test_files
   s.files       += s.executables.map {|f| File.join("bin", f) }
   s.files       +=  %w(LICENSE NOTICE VERSION README.md)
 
   s.require_path = "lib"
 
-  s.add_dependency "tvdinner"
+  s.add_dependency "chef"
 
   s.author      = "Tom Bombadil"
   s.email       = "amanibhavam@destructuring.org"

@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     tvdinner (0.0.3)
-      tvdinner
+      chef
 
 GEM
   remote: https://rubygems.org/
@@ -55,5 +55,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  chef (~> 11.4.4)
   tvdinner!
