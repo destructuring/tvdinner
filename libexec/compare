@@ -44,13 +44,16 @@ function main {
     ver_right="${1#origin/}"; shift
   fi
 
+  local nm_current_branch="$(git branch | awk '$1 == "*" { print $2 }')"
   if [[ "$(git show-ref $ver_left | grep -v refs/tags/ | wc -l | awk '{print $1}')" != 0 ]]; then
-    git fetch origin $ver_left:$ver_left
+    if [[ "$ver_left" != "$nm_current_branch" ]]; then
+      git fetch origin $ver_left:$ver_left
+    fi
     ver_left="origin/$ver_left"
   fi
 
   if [[ "$(git show-ref $ver_right | grep -v refs/tags/ | wc -l | awk '{print $1}')" != 0 ]]; then
-    if [[ "$ver_right" != "$(git branch | awk '$1 == "*" { print $2 }')" ]]; then
+    if [[ "$ver_right" != "$nm_current_branch" ]]; then
       git fetch origin $ver_right:$ver_right
     fi
     ver_right="origin/$ver_right"
