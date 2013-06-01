@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     tvdinner (0.0.3)
       chef
