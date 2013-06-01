@@ -1,0 +1,97 @@
+#!/bin/bash
+
+#/ NAME
+#/     compare -- Compare two noop chef runs
+#/
+#/ SYNOPSIS
+#/     
+#/     compare RNA VERSION [VERSION]
+#/       The right VERSION defaults to the current branch
+
+# figure out the project root under which bin, lib live
+shome="$(cd -P -- "$(dirname -- "$0")/.." && pwd -P)"
+
+# load a meat library
+source "$shome/libexec/_jason" "$@"
+
+DEFINE_boolean make "$FLAGS_TRUE" "Run make"
+
+# entry point
+function main {
+  case "$#" in
+    0)
+      logger_fatal "missing RNA VERSION"
+      exit 1
+      ;;
+    1)
+      logger_fatal "missing VERSION"
+      exit 1
+      ;;
+    2|3)
+      true
+      ;;
+    4)
+      logger_fatal "too many arguments ($*), only need RNA VERSION [VERSION]"
+      exit 1
+      ;;
+  esac
+
+  local pth_rna="$1"; shift
+  local ver_left="${1#origin/}"; shift
+
+  local ver_right="$(git branch | awk '$1 == "*" { print $2 }')"
+  if [[ "$#" > 0 ]]; then
+    ver_right="${1#origin/}"; shift
+  fi
+
+  if [[ "$(git show-ref $ver_left | grep -v refs/tags/ | wc -l | awk '{print $1}')" != 0 ]]; then
+    git fetch origin $ver_left:$ver_left
+    ver_left="origin/$ver_left"
+  fi
+
+  if [[ "$(git show-ref $ver_right | grep -v refs/tags/ | wc -l | awk '{print $1}')" != 0 ]]; then
+    if [[ "$ver_right" != "$(git branch | awk '$1 == "*" { print $2 }')" ]]; then
+      git fetch origin $ver_right:$ver_right
+    fi
+    ver_right="origin/$ver_right"
+  fi
+
+  local opt_make=""
+  if [[ "$FLAGS_make" = "$FLAGS_FALSE" ]]; then
+    opt_make="no"
+  fi
+
+  $shome/libexec/run-noop --${opt_make}make $shome/tmp/a $ver_left $pth_rna &
+  $shome/libexec/run-noop --${opt_make}make $shome/tmp/b $ver_right $pth_rna &
+  wait
+
+  local incomplete="$FLAGS_FALSE"
+  for a in $shome/tmp/{a,b}; do
+    for f in chef.{log,json}; do
+      if [[ ! -f "$a/$f" ]]; then
+        logger_fatal "missing $a/$f"
+        incomplete="$FLAGS_TRUE"
+      fi
+    done
+  done
+
+  if [[ "$incomplete" = "$FLAGS_TRUE" ]]; then
+    exit 1
+  fi
+
+  mark_output
+
+  logger_info "diff tmp/[ab]/chef.log"
+  mark_log "chef-log"
+  echo
+  diff $shome/tmp/{a,b}/chef.log || true
+  echo
+
+  logger_info "diff tmp/[ab]/chef.json"
+  mark_log "chef-node"
+  echo
+  diff $shome/tmp/{a,b}/chef.json || true
+  echo
+}
+
+require sub "$BASH_SOURCE" "$@"

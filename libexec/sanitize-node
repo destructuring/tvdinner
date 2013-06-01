@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#/ NAME
+#/     run-noop -- Run noop chef in separate workarea
+#/
+#/ SYNOPSIS
+#/     
+#/     run-noop DIR VERSION
+
+
+# figure out the project root under which bin, lib live
+shome="$(cd -P -- "$(dirname -- "$0")/.." && pwd -P)"
+
+# load a meat library
+source "$shome/libexec/_jason" "$@"
+
+# entry point
+function main {
+  bundle exec ruby "$shome/libexec/sanitize-node.rb" "$@" | \
+    perl -pe 's{/tmp/[ab]/}{/}g'
+}
+
+require sub "$BASH_SOURCE" "$@"

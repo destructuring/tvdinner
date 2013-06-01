@@ -1,0 +1,56 @@
+#!/bin/bash
+
+#/ NAME
+#/     run-noop -- Run noop chef in separate workarea
+#/
+#/ SYNOPSIS
+#/     
+#/     run-noop DIR VERSION DNA
+
+
+# figure out the project root under which bin, lib live
+shome="$(cd -P -- "$(dirname -- "$0")/.." && pwd -P)"
+
+# load a meat library
+source "$shome/libexec/_jason" "$@"
+
+DEFINE_boolean make "$FLAGS_FALSE" "Run make"
+
+# entry point
+function main {
+  local pth_workarea="$1"; shift
+  local ver_repo="$1"; shift
+
+  rm -f "$pth_workarea"/chef.{log,json}
+  
+  local pth_rna="rna/output/base.json"
+  if [[ "$#" > 0 ]]; then
+    pth_rna="$1"; shift
+  fi
+
+  if [[ ! -d "$pth_workarea/.git" ]]; then
+    git clone $shome "$pth_workarea"
+    FLAGS_make="$FLAGS_TRUE"
+  fi
+
+  cd "$pth_workarea"
+  git fetch
+  git fetch --tags
+  git reset --hard "$ver_repo"
+  rm -rf var
+  git checkout var
+  if [[ "$FLAGS_make" = "$FLAGS_TRUE" ]]; then
+    make
+  fi
+
+  local cmd_chef_local="bundle exec chef-local"
+  if [[ -x "bin/chef-local" ]]; then
+    cmd_chef_local="bin/chef-local"
+  fi
+
+  $cmd_chef_local --noop -c etc/chef/solo.rb -j $pth_rna > "var/chef/reports/chef.log"
+  (set +f; $shome/libexec/sanitize node "var/chef/reports/"chef*.json > "chef.json")
+  $shome/libexec/sanitize log "var/chef/reports/chef.log" > "chef.log"
+}
+
+require sub "$BASH_SOURCE" "$@"
