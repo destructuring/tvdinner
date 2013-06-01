@@ -51,7 +51,7 @@ function main {
   fi
 
   if [[ ! -d "$pth_workarea/.git" ]]; then
-    git clone $shome "$pth_workarea"
+    git clone . "$pth_workarea"
     FLAGS_make="$FLAGS_TRUE"
   fi
 

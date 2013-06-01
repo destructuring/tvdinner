@@ -65,8 +65,8 @@ function main {
     opt_make="no"
   fi
 
-  $shome/libexec/run-noop --${opt_make}make $shome/tmp/a $ver_left $pth_rna
-  $shome/libexec/run-noop --${opt_make}make $shome/tmp/b $ver_right $pth_rna
+  $shome/libexec/run-noop --${opt_make}make tmp/a $ver_left $pth_rna
+  $shome/libexec/run-noop --${opt_make}make tmp/b $ver_right $pth_rna
 
   local incomplete="$FLAGS_FALSE"
   for a in $shome/tmp/{a,b}; do
