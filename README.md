@@ -1,6 +1,6 @@
 # Demo
 
-    git clone git@github.com:destruturing/tvdinner
+    git clone git@github.com:destruturing/tvdinner-demo
     
-    cd tvdinner
-    make compare
+    cd tvdinner-demo
+    bin/compare
