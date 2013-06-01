@@ -63,6 +63,7 @@ function main {
     make
   fi
 
+  mkdir -p var/chef/reports
   bundle exec chef-local --noop -c etc/chef/solo.rb -j $pth_rna > "var/chef/reports/chef.log"
   (set +f; $shome/libexec/sanitize node "var/chef/reports/"chef*.json > "chef.json")
   $shome/libexec/sanitize log "var/chef/reports/chef.log" > "chef.log"
