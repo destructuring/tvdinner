@@ -5,5 +5,8 @@ ready:
 	@mkdir -p var/chef/backup var/chef/cache/checksums var/chef/data_bags var/chef/checksums var/chef/node var/chef/reports var/chef/sandboxes
 	@ln -nfs ../../roles var/chef/roles
 
-cook:
+cook: ready
 	@bundle exec chef-local -c etc/chef/solo.rb -o tvdinner
+
+compare: cook
+	@libexec/compare config/noop.json HEAD
