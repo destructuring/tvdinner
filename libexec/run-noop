@@ -37,8 +37,6 @@ function main {
   git fetch
   git fetch --tags
   git reset --hard "$ver_repo"
-  rm -rf var
-  git checkout var
   if [[ "$FLAGS_make" = "$FLAGS_TRUE" ]]; then
     make
   fi
